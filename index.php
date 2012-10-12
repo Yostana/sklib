@@ -1,15 +1,41 @@
 <?php
 
-include "/includes/sk_calculator.php.inc";
-require_once("/includes/sk_dbconnection.php.inc");
+require_once("/includes/db_connect.inc.php");
+require_once("/classes/Monster.class.php");
+?>
+<html>
+<header>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</header>
+<body>
+<?
 
-$arr_k = CalculateFightingSkills(500);
-echo "Необходимо успешных аттак одноручным оружием: ".$arr_k['one']."<br />";
-echo "Необходимо успешных аттак двуручным оружием: ".$arr_k['two']."<br />";
+$sth = $db->prepare("SELECT * FROM s_monster");
+$sth->execute();
+$result = $sth->fetchAll();
 
-echo "Запас кислорода: ".CalculateOxygenStock(132)."<br />";
 
-echo "Пороговое значение усталости: ".CalculateThresholdValueOfWeariness(529)."<br />";
+$arrMonster = new ArrayObject(array_map(function($row){return new Monster($row);},$result));
+
+?>
+    <table border = 1>
+        <tr>
+        <?
+        foreach($arrMonster as $Monster)
+        {
+            foreach($Monster as $property)
+            {
+                ?>
+                <td><? echo $property ?></td>
+                <?
+            }
+        }    
+        ?>
+        </tr>
+    </table>
+<body>
+</html>
+<?
 
 
 ?>
